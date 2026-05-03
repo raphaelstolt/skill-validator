@@ -1,0 +1,12 @@
+{
+    "preset": "base",
+    "ignore": {
+        "words": [
+            "php",
+            "yaml",
+            "booleans",
+            "frontmatter"
+        ],
+        "paths": []
+    }
+}
