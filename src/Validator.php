@@ -63,10 +63,12 @@ final class Validator
             ]);
         }
 
-        return $this->validateContent($content);
+        $parentDirName = \basename(\dirname(\realpath($skillFile)));
+
+        return $this->validateContent($content, $parentDirName);
     }
 
-    public function validateContent(string $content): ValidationResult
+    public function validateContent(string $content, ?string $parentDirName = null): ValidationResult
     {
         $parsed = $this->parseContent($content);
 
@@ -75,7 +77,7 @@ final class Validator
         }
 
         $rawMetadata = $parsed->rawMetadata();
-        $errors = $this->validateMetadata($rawMetadata);
+        $errors = $this->validateMetadata($rawMetadata, $parentDirName);
 
         if (\trim($parsed->body()) === '') {
             $errors[] = 'SKILL.md must contain Markdown instructions after the frontmatter.';
@@ -116,7 +118,7 @@ final class Validator
      *
      * @return list<string>
      */
-    private function validateMetadata(array $metadata): array
+    private function validateMetadata(array $metadata, ?string $parentDirName = null): array
     {
         $errors = [];
 
@@ -136,7 +138,7 @@ final class Validator
         } else {
             $errors = [
                 ...$errors,
-                ...$this->validateName($metadata['name']),
+                ...$this->validateName($metadata['name'], $parentDirName),
             ];
         }
 
@@ -175,7 +177,7 @@ final class Validator
     /**
      * @return list<string>
      */
-    private function validateName(mixed $name): array
+    private function validateName(mixed $name, ?string $parentDirName = null): array
     {
         if (\is_string($name) === false || \trim($name) === '') {
             return ['Frontmatter field name must be a non-empty string.'];
@@ -197,6 +199,13 @@ final class Validator
 
         if (\str_contains($name, '--')) {
             $errors[] = 'Frontmatter field name must not contain consecutive hyphens.';
+        }
+
+        if ($parentDirName !== null && $errors === [] && $name !== $parentDirName) {
+            $errors[] = \sprintf(
+                'Frontmatter field name must match the parent directory name "%s".',
+                $parentDirName
+            );
         }
 
         return $errors;

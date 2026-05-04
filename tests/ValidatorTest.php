@@ -14,7 +14,9 @@ final class ValidatorTest extends TestCase
     {
         $this->setUpTemporaryDirectory();
 
-        $skillFile = $this->temporaryDirectory . DIRECTORY_SEPARATOR . 'SKILL.md';
+        $skillDirectory = $this->temporaryDirectory . DIRECTORY_SEPARATOR . 'release-notes';
+        \mkdir($skillDirectory);
+        $skillFile = $skillDirectory . DIRECTORY_SEPARATOR . 'SKILL.md';
 
         \file_put_contents($skillFile, <<<'MARKDOWN'
 ---
@@ -114,7 +116,9 @@ MARKDOWN;
     {
         $this->setUpTemporaryDirectory();
 
-        $skillFile = $this->temporaryDirectory . DIRECTORY_SEPARATOR . 'SKILL.md';
+        $skillDirectory = $this->temporaryDirectory . DIRECTORY_SEPARATOR . 'release-notes';
+        \mkdir($skillDirectory);
+        $skillFile = $skillDirectory . DIRECTORY_SEPARATOR . 'SKILL.md';
 
         \file_put_contents($skillFile, <<<'MARKDOWN'
 ---
@@ -199,6 +203,35 @@ MARKDOWN;
         self::assertTrue($result->isInvalid());
         self::assertContains(
             'Frontmatter field name must use lowercase letters, numbers, and hyphens, and must not start or end with a hyphen.',
+            $result->errors()
+        );
+    }
+
+    #[Test]
+    public function itReportsNameMismatchWithParentDirectory(): void
+    {
+        $this->setUpTemporaryDirectory();
+
+        $skillDirectory = $this->temporaryDirectory . DIRECTORY_SEPARATOR . 'wrong-name';
+        \mkdir($skillDirectory);
+        $skillFile = $skillDirectory . DIRECTORY_SEPARATOR . 'SKILL.md';
+
+        \file_put_contents($skillFile, <<<'MARKDOWN'
+---
+name: release-notes
+description: Generate release notes from a changelog and commit history.
+---
+
+# Release notes
+
+Create concise release notes grouped by change type.
+MARKDOWN);
+
+        $result = (new Validator())->validateFile($skillFile);
+
+        self::assertTrue($result->isInvalid());
+        self::assertContains(
+            'Frontmatter field name must match the parent directory name "wrong-name".',
             $result->errors()
         );
     }
