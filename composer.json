@@ -1,6 +1,6 @@
 {
     "name": "stolt/skill-validator",
-    "description": "A PHP library for parsing and validating SKILL.md files or content.",
+    "description": "A PHP library for parsing and validating a SKILL.md file or raw SKILL.md content.",
     "keywords": [
         "php",
         "ai",
@@ -42,6 +42,9 @@
         "phpstan/phpstan": "^2.1",
         "phpunit/phpunit": "^11.4.4",
         "stolt/lean-package-validator": "^4.4"
+    },
+    "suggest": {
+        "stolt/list-skills-command": "Allows introspection of SKILL.md files from the console."
     },
     "scripts": {
         "test": "phpunit",
