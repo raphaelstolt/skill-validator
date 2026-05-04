@@ -6,7 +6,7 @@
 ![PHP Version](https://img.shields.io/badge/php-8.2+-ff69b4.svg)
 [![PDS Skeleton](https://img.shields.io/badge/pds-skeleton-blue.svg?style=flat)](https://github.com/php-pds/skeleton)
 
-A PHP library to parse and validate `SKILL.md` files against the
+A PHP library to parse and validate a `SKILL.md` file or raw `SKILL.md` content against the
 [SKILL.md format specification](https://www.skillsdirectory.com/docs/skill-md-format).
 
 ## Installation and usage
@@ -33,7 +33,7 @@ $validator = new SkillValidator();
 $result = $validator->validateContent('raw-skill-content');
 ```
 
-### Accessing validation results
+### Accessing validation results and metadata
 
 Validation returns a `Stolt\Ai\Skill\ValidationResult` object. When the `SKILL.md` content contains the required `name`
 and `description` fields, the parsed metadata is exposed as a `Stolt\Ai\Skill\Metadata` object.
@@ -71,10 +71,9 @@ $effort = $metadata->get('effort');
 $instructions = $result->body();
 
 // Array representation for logging, JSON APIs, or integrations.
-
 $arrayResult = $result->toArray();
 
-echo sprintf( 'Skill "%s" is valid: %s', $name, $description ) . PHP_EOL;
+echo sprintf('Skill "%s" is valid: %s', $name, $description) . PHP_EOL;
 ```
 
 ## Validation rules
