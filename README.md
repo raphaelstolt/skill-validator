@@ -22,6 +22,8 @@ The validator can validate either an existing `SKILL.md` file or raw `SKILL.md` 
 ### Validating a `SKILL.md` file
 
 ```php
+use Stolt\Ai\Skill\Validator;
+
 $validator = new SkillValidator();
 $result = $validator->validateFile('/path/to/an-ai-skill/SKILL.md');
 ```
@@ -29,6 +31,8 @@ $result = $validator->validateFile('/path/to/an-ai-skill/SKILL.md');
 ### Validating raw `SKILL.md` content
 
 ```php
+use Stolt\Ai\Skill\Validator;
+
 $validator = new SkillValidator();
 $result = $validator->validateContent('raw-skill-content');
 ```
@@ -39,8 +43,11 @@ Validation returns a `Stolt\Ai\Skill\ValidationResult` object. When the `SKILL.m
 and `description` fields, the parsed metadata is exposed as a `Stolt\Ai\Skill\Metadata` object.
 
 ```php
+use Stolt\Ai\Skill\Validator;
+
 $validator = new SkillValidator();
 $result = $validator->validateContent('raw-skill-content');
+
 if ($result->isInvalid()) {
     foreach ($result->errors() as $error) {
         echo $error . PHP_EOL;
@@ -76,7 +83,7 @@ $arrayResult = $result->toArray();
 echo sprintf('Skill "%s" is valid: %s', $name, $description) . PHP_EOL;
 ```
 
-For an actual integration the project [list-skills-command](https://github.com/raphaelstolt/list-skills-command) can also be consilidated.
+For an actual integration, the project [list-skills-command](https://github.com/raphaelstolt/list-skills-command) can also be consolidated.
 
 ## Validation rules
 
