@@ -1,6 +1,7 @@
 # skill-validator
 
 ![Test Status](https://github.com/raphaelstolt/skill-validator/workflows/test/badge.svg)
+![Lint Status](https://github.com/raphaelstolt/skill-validator/workflows/lint/badge.svg)
 [![Version](http://img.shields.io/packagist/v/stolt/skill-validator.svg?style=flat)](https://packagist.org/packages/stolt/skill-validator)
 ![Downloads](https://img.shields.io/packagist/dt/stolt/skill-validator)
 ![PHP Version](https://img.shields.io/badge/php-8.2+-ff69b4.svg)
