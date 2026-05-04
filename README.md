@@ -76,6 +76,8 @@ $arrayResult = $result->toArray();
 echo sprintf('Skill "%s" is valid: %s', $name, $description) . PHP_EOL;
 ```
 
+For an actual integration the project [list-skills-command](https://github.com/raphaelstolt/list-skills-command) can also be consilidated.
+
 ## Validation rules
 
 The validator checks that a `SKILL.md` document:
