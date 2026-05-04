@@ -47,7 +47,7 @@
         "stolt/list-skills-command": "Allows introspection of SKILL.md files from the console."
     },
     "scripts": {
-        "test": "phpunit",
+        "test": "phpunit --display-all-issues",
         "cs-fix": "php-cs-fixer --allow-risky=yes fix . -vv || true",
         "cs-lint": "php-cs-fixer fix --diff --stop-on-violation --verbose --dry-run --allow-risky=yes",
         "spell-check": "./vendor/bin/peck",
