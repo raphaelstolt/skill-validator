@@ -24,7 +24,7 @@ The validator can validate either an existing `SKILL.md` file or raw `SKILL.md` 
 ```php
 use Stolt\Ai\Skill\Validator;
 
-$validator = new SkillValidator();
+$validator = new Validator();
 $result = $validator->validateFile('/path/to/an-ai-skill/SKILL.md');
 ```
 
@@ -33,9 +33,12 @@ $result = $validator->validateFile('/path/to/an-ai-skill/SKILL.md');
 ```php
 use Stolt\Ai\Skill\Validator;
 
-$validator = new SkillValidator();
+$validator = new Validator();
 $result = $validator->validateContent('raw-skill-content');
 ```
+
+> [!TIP]
+> The `validate` alias method accepts either a file path or raw content and delegates to the appropriate method automatically.
 
 ### Accessing validation results and metadata
 
@@ -45,7 +48,7 @@ and `description` fields, the parsed metadata is exposed as a `Stolt\Ai\Skill\Me
 ```php
 use Stolt\Ai\Skill\Validator;
 
-$validator = new SkillValidator();
+$validator = new Validator();
 $result = $validator->validateContent('raw-skill-content');
 
 if ($result->isInvalid()) {

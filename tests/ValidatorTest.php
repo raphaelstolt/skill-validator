@@ -10,6 +10,71 @@ use Stolt\Ai\Skill\Validator;
 final class ValidatorTest extends TestCase
 {
     #[Test]
+    public function itDelegatesToValidateFileWhenInputIsAFilePath(): void
+    {
+        $this->setUpTemporaryDirectory();
+
+        $skillFile = $this->temporaryDirectory . DIRECTORY_SEPARATOR . 'SKILL.md';
+
+        \file_put_contents($skillFile, <<<'MARKDOWN'
+---
+name: release-notes
+description: Generate release notes from a changelog and commit history.
+---
+
+# Release notes
+
+Create concise release notes grouped by change type.
+MARKDOWN);
+
+        $result = (new Validator())->validate($skillFile);
+        $metadata = $result->metadata();
+
+        self::assertTrue($result->isValid());
+        self::assertNotNull($metadata);
+        self::assertSame('release-notes', $metadata->name());
+        self::assertSame(
+            'Generate release notes from a changelog and commit history.',
+            $metadata->description()
+        );
+    }
+
+    #[Test]
+    public function itDelegatesToValidateContentWhenInputIsRawContent(): void
+    {
+        $content = <<<'MARKDOWN'
+---
+name: code-review
+description: Review code changes and provide actionable feedback.
+---
+
+# Code review
+
+Review the changed files and report correctness, security, and maintainability issues.
+MARKDOWN;
+
+        $result = (new Validator())->validate($content);
+        $metadata = $result->metadata();
+
+        self::assertTrue($result->isValid());
+        self::assertNotNull($metadata);
+        self::assertSame('code-review', $metadata->name());
+        self::assertSame('Review code changes and provide actionable feedback.', $metadata->description());
+    }
+
+    #[Test]
+    public function itDelegatesToValidateContentWhenInputIsNotAnExistingFile(): void
+    {
+        $result = (new Validator())->validate('/does/not/exist/SKILL.md');
+
+        self::assertTrue($result->isInvalid());
+        self::assertSame(
+            ['SKILL.md must start with YAML frontmatter delimited by --- lines.'],
+            $result->errors()
+        );
+    }
+
+    #[Test]
     public function itValidatesAValidSkillMdContent(): void
     {
         $content = <<<'MARKDOWN'

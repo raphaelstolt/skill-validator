@@ -32,6 +32,15 @@ final class Validator
         'when_to_use',
     ];
 
+    public function validate(string $input): ValidationResult
+    {
+        if (\is_file($input)) {
+            return $this->validateFile($input);
+        }
+
+        return $this->validateContent($input);
+    }
+
     public function validateFile(string $skillFile): ValidationResult
     {
         if (\is_file($skillFile) === false) {
