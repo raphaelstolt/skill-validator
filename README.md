@@ -6,6 +6,7 @@
 ![Downloads](https://img.shields.io/packagist/dt/stolt/skill-validator)
 ![PHP Version](https://img.shields.io/badge/php-8.2+-ff69b4.svg)
 [![PDS Skeleton](https://img.shields.io/badge/pds-skeleton-blue.svg?style=flat)](https://github.com/php-pds/skeleton)
+[![Lean dist package](https://img.shields.io/badge/lean-dist%20package-00ffb6.svg?style=flat)](https://github.com/raphaelstolt/lean-package-validator)
 
 A PHP library to parse and validate `SKILL.md` files or raw `SKILL.md` content against the
 [SKILL.md format specification](https://www.skillsdirectory.com/docs/skill-md-format).
