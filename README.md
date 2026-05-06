@@ -7,7 +7,7 @@
 ![PHP Version](https://img.shields.io/badge/php-8.2+-ff69b4.svg)
 [![PDS Skeleton](https://img.shields.io/badge/pds-skeleton-blue.svg?style=flat)](https://github.com/php-pds/skeleton)
 
-A PHP library to parse and validate a `SKILL.md` file or raw `SKILL.md` content against the
+A PHP library to parse and validate `SKILL.md` files or raw `SKILL.md` content against the
 [SKILL.md format specification](https://www.skillsdirectory.com/docs/skill-md-format).
 
 ## Installation and usage
@@ -18,7 +18,7 @@ composer require stolt/skill-validator
 
 ## Usage
 
-The validator can validate either an existing `SKILL.md` file or raw `SKILL.md` content.
+The validator can validate either existing `SKILL.md` files or raw `SKILL.md` content.
 
 ### Validating a `SKILL.md` file
 
