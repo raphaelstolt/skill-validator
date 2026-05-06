@@ -29,6 +29,27 @@ $validator = new Validator();
 $result = $validator->validateFile('/path/to/an-ai-skill/SKILL.md');
 ```
 
+### Validating all `SKILL.md` files in a directory
+
+```php
+use Stolt\Ai\Skill\Validator;
+
+$validator = new Validator();
+$results = $validator->validateFromDirectory('/path/to/skills');
+
+foreach ($results as $filePath => $result) {
+    if ($result->isInvalid()) {
+        echo sprintf('Invalid: %s', $filePath) . PHP_EOL;
+        foreach ($result->errors() as $error) {
+            echo '  - ' . $error . PHP_EOL;
+        }
+    }
+}
+```
+
+The method returns an `array<string, ValidationResult>` keyed by absolute file path, covering all `SKILL.md` files found
+recursively under the given directory.
+
 ### Validating raw `SKILL.md` content
 
 ```php
@@ -39,7 +60,8 @@ $result = $validator->validateContent('raw-skill-content');
 ```
 
 > [!TIP]
-> The `validate` alias method accepts either a file path or raw content and delegates to the appropriate method automatically.
+> The `validate` alias method accepts either a file path, directory path, or raw content and delegates to the
+> appropriate method automatically.
 
 ### Accessing validation results and metadata
 

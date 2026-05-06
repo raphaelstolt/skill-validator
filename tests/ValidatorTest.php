@@ -10,6 +10,122 @@ use Stolt\Ai\Skill\Validator;
 final class ValidatorTest extends TestCase
 {
     #[Test]
+    public function itValidatesAllSkillMdFilesInADirectory(): void
+    {
+        $this->setUpTemporaryDirectory();
+
+        foreach (['release-notes', 'code-review'] as $skillName) {
+            $skillDirectory = $this->temporaryDirectory . DIRECTORY_SEPARATOR . $skillName;
+            \mkdir($skillDirectory);
+            \file_put_contents(
+                $skillDirectory . DIRECTORY_SEPARATOR . 'SKILL.md',
+                <<<MARKDOWN
+---
+name: {$skillName}
+description: A skill named {$skillName}.
+---
+
+# {$skillName}
+
+Instructions for {$skillName}.
+MARKDOWN
+            );
+        }
+
+        $results = (new Validator())->validateFromDirectory($this->temporaryDirectory);
+
+        self::assertCount(2, $results);
+
+        foreach ($results as $result) {
+            self::assertTrue($result->isValid());
+        }
+    }
+
+    #[Test]
+    public function itReturnsMixedResultsForADirectoryWithInvalidSkillMdFiles(): void
+    {
+        $this->setUpTemporaryDirectory();
+
+        $validDirectory = $this->temporaryDirectory . DIRECTORY_SEPARATOR . 'release-notes';
+        \mkdir($validDirectory);
+        \file_put_contents($validDirectory . DIRECTORY_SEPARATOR . 'SKILL.md', <<<'MARKDOWN'
+---
+name: release-notes
+description: Generate release notes from a changelog and commit history.
+---
+
+# Release notes
+
+Create concise release notes grouped by change type.
+MARKDOWN);
+
+        $invalidDirectory = $this->temporaryDirectory . DIRECTORY_SEPARATOR . 'broken-skill';
+        \mkdir($invalidDirectory);
+        \file_put_contents($invalidDirectory . DIRECTORY_SEPARATOR . 'SKILL.md', <<<'MARKDOWN'
+# Missing frontmatter
+
+This skill has no YAML frontmatter.
+MARKDOWN);
+
+        $results = (new Validator())->validateFromDirectory($this->temporaryDirectory);
+
+        self::assertCount(2, $results);
+
+        $validCount = \count(\array_filter($results, fn ($r) => $r->isValid()));
+        $invalidCount = \count(\array_filter($results, fn ($r) => $r->isInvalid()));
+
+        self::assertSame(1, $validCount);
+        self::assertSame(1, $invalidCount);
+    }
+
+    #[Test]
+    public function itReturnsAnEmptyArrayForADirectoryWithoutSkillMdFiles(): void
+    {
+        $this->setUpTemporaryDirectory();
+
+        $results = (new Validator())->validateFromDirectory($this->temporaryDirectory);
+
+        self::assertSame([], $results);
+    }
+
+    #[Test]
+    public function itThrowsAnExceptionForANonExistentDirectory(): void
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Directory does not exist: /does/not/exist');
+
+        (new Validator())->validateFromDirectory('/does/not/exist');
+    }
+
+    #[Test]
+    public function itDelegatesToValidateFromDirectoryWhenInputIsADirectoryPath(): void
+    {
+        $this->setUpTemporaryDirectory();
+
+        $skillDirectory = $this->temporaryDirectory . DIRECTORY_SEPARATOR . 'release-notes';
+        \mkdir($skillDirectory);
+        \file_put_contents($skillDirectory . DIRECTORY_SEPARATOR . 'SKILL.md', <<<'MARKDOWN'
+---
+name: release-notes
+description: Generate release notes from a changelog and commit history.
+---
+
+# Release notes
+
+Create concise release notes grouped by change type.
+MARKDOWN);
+
+        $results = (new Validator())->validate($this->temporaryDirectory);
+
+        self::assertIsArray($results);
+        self::assertCount(1, $results);
+
+        foreach ($results as $result) {
+            self::assertTrue($result->isValid());
+        }
+    }
+
+    #[Test]
     public function itDelegatesToValidateFileWhenInputIsAFilePath(): void
     {
         $this->setUpTemporaryDirectory();

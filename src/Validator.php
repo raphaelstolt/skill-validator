@@ -32,8 +32,55 @@ final class Validator
         'when_to_use',
     ];
 
-    public function validate(string $input): ValidationResult
+    /**
+     * @return array<string, ValidationResult>
+     */
+    public function validateFromDirectory(string $directory): array
     {
+        if (\is_dir($directory) === false) {
+            throw new \RuntimeException(
+                \sprintf('Directory does not exist: %s', $directory)
+            );
+        }
+
+        if (\is_readable($directory) === false) {
+            throw new \RuntimeException(
+                \sprintf('Directory is not readable: %s', $directory)
+            );
+        }
+
+        $results = [];
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($directory, \RecursiveDirectoryIterator::SKIP_DOTS)
+        );
+
+        /** @var \SplFileInfo $file */
+        foreach ($iterator as $file) {
+            if ($file->isFile() === false || $file->getFilename() !== 'SKILL.md') {
+                continue;
+            }
+
+            $filePath = $file->getRealPath();
+
+            if ($filePath === false) {
+                continue;
+            }
+
+            $results[$filePath] = $this->validateFile($filePath);
+        }
+
+        return $results;
+    }
+
+    /**
+     * @return ValidationResult|array<string, ValidationResult>
+     */
+    public function validate(string $input): ValidationResult|array
+    {
+        if (\is_dir($input)) {
+            return $this->validateFromDirectory($input);
+        }
+
         if (\is_file($input)) {
             return $this->validateFile($input);
         }
