@@ -1,6 +1,6 @@
 {
     "name": "stolt/skill-validator",
-    "description": "A library for parsing and validating a SKILL.md file or raw SKILL.md content.",
+    "description": "A library for parsing and validating SKILL.md files or raw SKILL.md content.",
     "keywords": [
         "php",
         "ai",
@@ -9,6 +9,7 @@
         "validate",
         "validating",
         "skills",
+        "skills directory",
         "agent-skills",
         "SKILL.md",
         "file",
