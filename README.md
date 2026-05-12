@@ -110,6 +110,18 @@ $arrayResult = $result->toArray();
 echo sprintf('Skill "%s" is valid: %s', $name, $description) . PHP_EOL;
 ```
 
+> [!TIP]
+> As of version `0.0.5` you can use the `toSkillMd()` method to collect a populated `SkillMd` instance of the [stolt/skill-md](https://github.com/raphaelstolt/skill-md/) package.
+
+```php
+use Stolt\Ai\Skill\Validator;
+
+$validator = new Validator();
+$result = $validator->validateContent('raw-skill-content');
+
+$skillMd = $result->toSkillMd();
+```
+
 For an actual integration, the project [list-skills-command](https://github.com/raphaelstolt/list-skills-command) can also be consolidated.
 
 ## Validation rules

@@ -6,6 +6,7 @@ namespace Stolt\Ai\Skill\Tests;
 
 use PHPUnit\Framework\Attributes\Test;
 use Stolt\Ai\Skill\Validator;
+use Stolt\Ai\SkillMd;
 
 final class ValidatorTest extends TestCase
 {
@@ -453,5 +454,38 @@ MARKDOWN;
             'Review code changes and provide actionable feedback.',
             $metadata->description()
         );
+    }
+
+    #[Test]
+    public function itExposesAPopulatedSkillMdInstance(): void
+    {
+        $content = <<<MARKDOWN
+---
+name: code-review
+description: Review code changes and provide actionable feedback.
+---
+
+# Code review
+
+Review the changed files.
+MARKDOWN;
+
+        $expectedBody = <<<BODY_MARKDOWN
+
+# Code review
+
+Review the changed files.
+BODY_MARKDOWN;
+
+        $result = (new Validator())->validateContent($content);
+        $skillMdInstance = $result->toSkillMd();
+
+        self::assertInstanceOf(SkillMd::class, $skillMdInstance);
+        self::assertSame('code-review', $skillMdInstance->name());
+        self::assertSame(
+            'Review code changes and provide actionable feedback.',
+            $skillMdInstance->description()
+        );
+        self::assertSame($expectedBody, $skillMdInstance->body());
     }
 }

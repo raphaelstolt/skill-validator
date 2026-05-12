@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Stolt\Ai\Skill;
 
+use Stolt\Ai\SkillMd;
+
 final readonly class ValidationResult
 {
     /**
@@ -101,6 +103,15 @@ final readonly class ValidationResult
     public function body(): string
     {
         return $this->body;
+    }
+
+    public function toSkillMd(): SkillMd
+    {
+        return SkillMd::create(
+            $this->metadata?->get('name'),
+            $this->metadata?->get('description'),
+            $this->body(),
+            $this->metadata?->toArray() ?? []);
     }
 
     /**
