@@ -49,7 +49,7 @@ MARKDOWN
 
         $validDirectory = $this->temporaryDirectory . DIRECTORY_SEPARATOR . 'release-notes';
         \mkdir($validDirectory);
-        \file_put_contents($validDirectory . DIRECTORY_SEPARATOR . 'SKILL.md', <<<'MARKDOWN'
+        \file_put_contents($validDirectory . DIRECTORY_SEPARATOR . 'SKILL.md', <<<MARKDOWN
 ---
 name: release-notes
 description: Generate release notes from a changelog and commit history.
@@ -62,7 +62,7 @@ MARKDOWN);
 
         $invalidDirectory = $this->temporaryDirectory . DIRECTORY_SEPARATOR . 'broken-skill';
         \mkdir($invalidDirectory);
-        \file_put_contents($invalidDirectory . DIRECTORY_SEPARATOR . 'SKILL.md', <<<'MARKDOWN'
+        \file_put_contents($invalidDirectory . DIRECTORY_SEPARATOR . 'SKILL.md', <<<MARKDOWN
 # Missing frontmatter
 
 This skill has no YAML frontmatter.
@@ -105,7 +105,7 @@ MARKDOWN);
 
         $skillDirectory = $this->temporaryDirectory . DIRECTORY_SEPARATOR . 'release-notes';
         \mkdir($skillDirectory);
-        \file_put_contents($skillDirectory . DIRECTORY_SEPARATOR . 'SKILL.md', <<<'MARKDOWN'
+        \file_put_contents($skillDirectory . DIRECTORY_SEPARATOR . 'SKILL.md', <<<MARKDOWN
 ---
 name: release-notes
 description: Generate release notes from a changelog and commit history.
@@ -135,7 +135,7 @@ MARKDOWN);
         \mkdir($skillDirectory);
         $skillFile = $skillDirectory . DIRECTORY_SEPARATOR . 'SKILL.md';
 
-        \file_put_contents($skillFile, <<<'MARKDOWN'
+        \file_put_contents($skillFile, <<<MARKDOWN
 ---
 name: release-notes
 description: Generate release notes from a changelog and commit history.
@@ -161,7 +161,7 @@ MARKDOWN);
     #[Test]
     public function itDelegatesToValidateContentWhenInputIsRawContent(): void
     {
-        $content = <<<'MARKDOWN'
+        $content = <<<MARKDOWN
 ---
 name: code-review
 description: Review code changes and provide actionable feedback.
@@ -196,7 +196,7 @@ MARKDOWN;
     #[Test]
     public function itValidatesAValidSkillMdContent(): void
     {
-        $content = <<<'MARKDOWN'
+        $content = <<<MARKDOWN
 ---
 name: code-review
 description: Review code changes and provide actionable feedback.
@@ -237,7 +237,7 @@ MARKDOWN;
         \mkdir($skillDirectory);
         $skillFile = $skillDirectory . DIRECTORY_SEPARATOR . 'SKILL.md';
 
-        \file_put_contents($skillFile, <<<'MARKDOWN'
+        \file_put_contents($skillFile, <<<MARKDOWN
 ---
 name: release-notes
 description: Generate release notes from a changelog and commit history.
@@ -263,7 +263,7 @@ MARKDOWN);
     #[Test]
     public function itReportsMissingFrontmatter(): void
     {
-        $content = <<<'MARKDOWN'
+        $content = <<<MARKDOWN
 # Code review
 
 Review the changed files.
@@ -284,7 +284,7 @@ MARKDOWN;
     #[Test]
     public function itReportsMissingRequiredFields(): void
     {
-        $content = <<<'MARKDOWN'
+        $content = <<<MARKDOWN
 ---
 version: 1.0.0
 ---
@@ -304,7 +304,7 @@ MARKDOWN;
     #[Test]
     public function itReportsInvalidName(): void
     {
-        $content = <<<'MARKDOWN'
+        $content = <<<MARKDOWN
 ---
 name: Invalid Skill
 description: Review code changes and provide actionable feedback.
@@ -333,7 +333,7 @@ MARKDOWN;
         \mkdir($skillDirectory);
         $skillFile = $skillDirectory . DIRECTORY_SEPARATOR . 'SKILL.md';
 
-        \file_put_contents($skillFile, <<<'MARKDOWN'
+        \file_put_contents($skillFile, <<<MARKDOWN
 ---
 name: release-notes
 description: Generate release notes from a changelog and commit history.
@@ -356,7 +356,7 @@ MARKDOWN);
     #[Test]
     public function itReportsUnexpectedFields(): void
     {
-        $content = <<<'MARKDOWN'
+        $content = <<<MARKDOWN
 ---
 name: code-review
 description: Review code changes and provide actionable feedback.
@@ -377,7 +377,7 @@ MARKDOWN;
     #[Test]
     public function itReportsEmptyMarkdownInstructions(): void
     {
-        $content = <<<'MARKDOWN'
+        $content = <<<MARKDOWN
 ---
 name: code-review
 description: Review code changes and provide actionable feedback.
@@ -408,7 +408,7 @@ MARKDOWN;
     #[Test]
     public function itCanBeConvertedToAnArray(): void
     {
-        $content = <<<'MARKDOWN'
+        $content = <<<MARKDOWN
 ---
 name: code-review
 description: Review code changes and provide actionable feedback.
@@ -433,7 +433,7 @@ MARKDOWN;
     #[Test]
     public function itExposesRequiredMetadataFieldsAsDedicatedMethods(): void
     {
-        $content = <<<'MARKDOWN'
+        $content = <<<MARKDOWN
 ---
 name: code-review
 description: Review code changes and provide actionable feedback.
