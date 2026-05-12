@@ -111,7 +111,8 @@ final readonly class ValidationResult
             $this->metadata?->get('name'),
             $this->metadata?->get('description'),
             $this->body(),
-            $this->metadata?->toArray() ?? []);
+            $this->metadata?->toArray() ?? []
+        );
     }
 
     /**
