@@ -40,9 +40,10 @@
     "require-dev": {
         "dg/bypass-finals": "^1.9",
         "friendsofphp/php-cs-fixer": "^3.70.1",
+        "laravel/pao": "^1.0",
         "peckphp/peck": "^0.1.2",
         "phpstan/phpstan": "^2.1",
-        "phpunit/phpunit": "^11.4.4",
+        "phpunit/phpunit": "^13.0||^12.0||^11.4.4||^10.5.25",
         "stolt/lean-package-validator": "^4.4||^5.0"
     },
     "suggest": {
@@ -50,6 +51,7 @@
     },
     "scripts": {
         "test": "phpunit --display-all-issues",
+        "test-agentic": "export CLAUDECODE=1 && phpunit",
         "cs-fix": "php-cs-fixer --allow-risky=yes fix . -vv || true",
         "cs-lint": "php-cs-fixer fix --diff --stop-on-violation --verbose --dry-run --allow-risky=yes",
         "spell-check": "./vendor/bin/peck",

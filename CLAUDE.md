@@ -12,6 +12,7 @@ PHP library for parsing and validating `SKILL.md` files against the [SKILL.md fo
 
 ```bash
 composer test                   # Run PHPUnit tests
+composer test-agentic           # Run PHPUnit tests with agentic output
 composer test-with-coverage     # Run tests with coverage report
 composer cs-fix                 # Auto-fix coding style (PSR-2)
 composer cs-lint                # Check coding style compliance
