@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Stolt\Ai\Skill\Tests;
 
 use PHPUnit\Framework\Attributes\Test;
+use Stolt\Ai\Skill\ValidationResult;
 use Stolt\Ai\Skill\Validator;
 use Stolt\Ai\SkillMd;
 
@@ -478,14 +479,144 @@ Review the changed files.
 BODY_MARKDOWN;
 
         $result = (new Validator())->validateContent($content);
-        $skillMdInstance = $result->toSkillMd();
 
-        self::assertInstanceOf(SkillMd::class, $skillMdInstance);
-        self::assertSame('code-review', $skillMdInstance->name());
+        $skillMdViaAccessor = $result->skillMd();
+        self::assertInstanceOf(SkillMd::class, $skillMdViaAccessor);
+        self::assertSame('code-review', $skillMdViaAccessor->name());
         self::assertSame(
             'Review code changes and provide actionable feedback.',
-            $skillMdInstance->description()
+            $skillMdViaAccessor->description()
         );
-        self::assertSame($expectedBody, $skillMdInstance->body());
+        self::assertSame($expectedBody, $skillMdViaAccessor->body());
+
+        $skillMdViaConversion = $result->toSkillMd();
+        self::assertSame($skillMdViaAccessor, $skillMdViaConversion);
+    }
+
+    #[Test]
+    public function itValidatesASkillMdInstance(): void
+    {
+        $skillMd = SkillMd::create(
+            'code-review',
+            'Review code changes and provide actionable feedback.',
+            "# Code review\n\nReview the changed files."
+        );
+
+        $result = (new Validator())->validateSkillMd($skillMd);
+        $metadata = $result->metadata();
+
+        self::assertTrue($result->isValid());
+        self::assertNotNull($metadata);
+        self::assertSame('code-review', $metadata->name());
+        self::assertSame(
+            'Review code changes and provide actionable feedback.',
+            $metadata->description()
+        );
+    }
+
+    #[Test]
+    public function itValidatesASkillMdInstanceWithAdditionalFields(): void
+    {
+        $skillMd = SkillMd::create(
+            'code-review',
+            'Review code changes and provide actionable feedback.',
+            "# Code review\n\nReview the changed files.",
+            ['tags' => ['php', 'review'], 'version' => '1.0.0']
+        );
+
+        $result = (new Validator())->validateSkillMd($skillMd);
+        $metadata = $result->metadata();
+
+        self::assertTrue($result->isValid());
+        self::assertNotNull($metadata);
+        self::assertSame(['php', 'review'], $metadata->tags());
+        self::assertSame('1.0.0', $metadata->version());
+    }
+
+    #[Test]
+    public function itDelegatesToValidateSkillMdWhenInputIsASkillMdInstance(): void
+    {
+        $skillMd = SkillMd::create(
+            'release-notes',
+            'Generate release notes from a changelog and commit history.',
+            "# Release notes\n\nCreate concise release notes grouped by change type."
+        );
+
+        $result = (new Validator())->validate($skillMd);
+
+        self::assertInstanceOf(ValidationResult::class, $result);
+        self::assertTrue($result->isValid());
+        $metadata = $result->metadata();
+        self::assertNotNull($metadata);
+        self::assertSame('release-notes', $metadata->name());
+    }
+
+    #[Test]
+    public function itRoundTripsFromContentValidationToSkillMdAndBackThroughValidation(): void
+    {
+        $content = <<<MARKDOWN
+---
+name: code-review
+description: Review code changes and provide actionable feedback.
+tags:
+  - php
+  - review
+version: 1.0.0
+---
+
+# Code review
+
+Review the changed files and report issues.
+MARKDOWN;
+
+        $firstResult = (new Validator())->validateContent($content);
+        self::assertTrue($firstResult->isValid());
+
+        $skillMd = $firstResult->toSkillMd();
+        self::assertInstanceOf(SkillMd::class, $skillMd);
+
+        $secondResult = (new Validator())->validateSkillMd($skillMd);
+        $secondMetadata = $secondResult->metadata();
+
+        self::assertTrue($secondResult->isValid());
+        self::assertNotNull($secondMetadata);
+        self::assertSame('code-review', $secondMetadata->name());
+        self::assertSame(
+            'Review code changes and provide actionable feedback.',
+            $secondMetadata->description()
+        );
+        self::assertSame(['php', 'review'], $secondMetadata->tags());
+        self::assertSame('1.0.0', $secondMetadata->version());
+    }
+
+    #[Test]
+    public function itExposesNullSkillMdForAnInvalidResult(): void
+    {
+        $content = <<<MARKDOWN
+# Missing frontmatter
+
+This skill has no frontmatter.
+MARKDOWN;
+
+        $result = (new Validator())->validateContent($content);
+
+        self::assertTrue($result->isInvalid());
+        self::assertNull($result->skillMd());
+    }
+
+    #[Test]
+    public function itThrowsWhenConvertingAnInvalidResultToSkillMd(): void
+    {
+        $content = <<<MARKDOWN
+# Missing frontmatter
+
+This skill has no frontmatter.
+MARKDOWN;
+
+        $result = (new Validator())->validateContent($content);
+
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Cannot convert an invalid ValidationResult to a SkillMd instance.');
+        $result->toSkillMd();
     }
 }

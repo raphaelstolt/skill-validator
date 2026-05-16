@@ -19,7 +19,11 @@ composer require stolt/skill-validator
 
 ## Usage
 
-The validator can validate either existing `SKILL.md` files or raw `SKILL.md` content.
+The `SkillMd` class from the [stolt/skill-md](https://github.com/raphaelstolt/skill-md/) package is the primary
+abstraction for a validated skill: every valid result exposes a `SkillMd` instance, and the validator also accepts
+`SkillMd` instances directly as input.
+
+The validator can validate existing `SKILL.md` files, raw `SKILL.md` content, or `SkillMd` instances.
 
 ### Validating a `SKILL.md` file
 
@@ -60,14 +64,31 @@ $validator = new Validator();
 $result = $validator->validateContent('raw-skill-content');
 ```
 
+### Validating a `SkillMd` instance
+
+```php
+use Stolt\Ai\Skill\Validator;
+use Stolt\Ai\SkillMd;
+
+$skillMd = SkillMd::create(
+    'code-review',
+    'Review code changes and provide actionable feedback.',
+    "# Code review\n\nReview the changed files and report issues.",
+    ['tags' => ['php', 'review'], 'version' => '1.0.0']
+);
+
+$validator = new Validator();
+$result = $validator->validateSkillMd($skillMd);
+```
+
 > [!TIP]
-> The `validate` alias method accepts either a file path, directory path, or raw content and delegates to the
-> appropriate method automatically.
+> The `validate` alias method accepts a file path, directory path, raw content, or a `SkillMd` instance and delegates
+> to the appropriate method automatically.
 
 ### Accessing validation results and metadata
 
-Validation returns a `Stolt\Ai\Skill\ValidationResult` object. When the `SKILL.md` content contains the required `name`
-and `description` fields, the parsed metadata is exposed as a `Stolt\Ai\Skill\Metadata` object.
+Validation returns a `Stolt\Ai\Skill\ValidationResult` object. When the `SKILL.md` content is valid, a `SkillMd`
+instance is available directly. The parsed metadata is also accessible as a `Stolt\Ai\Skill\Metadata` object.
 
 ```php
 use Stolt\Ai\Skill\Validator;
@@ -78,28 +99,30 @@ $result = $validator->validateContent('raw-skill-content');
 if ($result->isInvalid()) {
     foreach ($result->errors() as $error) {
         echo $error . PHP_EOL;
-    } 
+    }
     // Raw metadata can still be inspected when parsing succeeded but validation failed.
     $rawMetadata = $result->rawMetadata();
     exit(1);
-} 
-
-$metadata = $result->metadata();
-
-if ($metadata === null) {
-    throw new RuntimeException('Expected validated SKILL.md metadata.');
 }
 
-// Required SKILL.md metadata fields.
-$name = $metadata->name();
-$description = $metadata->description();
+// Primary SkillMd abstraction — available on every valid result.
+$skillMd = $result->skillMd();  // returns ?SkillMd (null when invalid)
 
-// Optional SKILL.md metadata fields.
-$version = $metadata->version();
-$tags = $metadata->tags();
-$allowedTools = $metadata->get('allowed-tools', []);
-$model = $metadata->get('model');
-$effort = $metadata->get('effort');
+// Or assert the SkillMd directly, which throws a LogicException when the result is invalid.
+$skillMd = $result->toSkillMd();
+
+// Use the SkillMd instance.
+$name        = $skillMd->name();
+$description = $skillMd->description();
+$body        = $skillMd->body();
+$tags        = $skillMd->tags();
+$version     = $skillMd->version();
+
+// Metadata object for field access with defaults.
+$metadata    = $result->metadata();
+$allowedTools = $metadata?->get('allowed-tools', []);
+$model       = $metadata?->get('model');
+$effort      = $metadata?->get('effort');
 
 // Markdown instructions after the YAML frontmatter.
 $instructions = $result->body();
@@ -110,19 +133,27 @@ $arrayResult = $result->toArray();
 echo sprintf('Skill "%s" is valid: %s', $name, $description) . PHP_EOL;
 ```
 
-For an actual integration, the project [list-skills-command](https://github.com/raphaelstolt/list-skills-command) can also be consolidated.
+### Round-tripping between content and `SkillMd`
 
-> [!TIP]
-> As of version `0.0.5` you can use the `toSkillMd()` method to collect a populated `SkillMd` instance of the [stolt/skill-md](https://github.com/raphaelstolt/skill-md/) package.
+Because `validateSkillMd()` accepts a `SkillMd` instance and `toSkillMd()` returns one, validation results and
+`SkillMd` objects round-trip cleanly:
 
 ```php
 use Stolt\Ai\Skill\Validator;
 
 $validator = new Validator();
-$result = $validator->validateContent('raw-skill-content');
 
+// Parse and validate raw content.
+$result = $validator->validateContent($rawContent);
+
+// Obtain the primary SkillMd abstraction.
 $skillMd = $result->toSkillMd();
+
+// Re-validate the SkillMd — e.g. after modifying it.
+$revalidated = $validator->validateSkillMd($skillMd);
 ```
+
+For an actual integration, the project [list-skills-command](https://github.com/raphaelstolt/list-skills-command) can also be consolidated.
 
 ## Validation rules
 

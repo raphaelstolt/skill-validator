@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Stolt\Ai\Skill;
 
+use Stolt\Ai\SkillMd;
+
 final class Validator
 {
     private const MAX_NAME_LENGTH = 64;
@@ -75,8 +77,12 @@ final class Validator
     /**
      * @return ValidationResult|array<string, ValidationResult>
      */
-    public function validate(string $input): ValidationResult|array
+    public function validate(string|SkillMd $input): ValidationResult|array
     {
+        if ($input instanceof SkillMd) {
+            return $this->validateSkillMd($input);
+        }
+
         if (\is_dir($input)) {
             return $this->validateFromDirectory($input);
         }
@@ -86,6 +92,11 @@ final class Validator
         }
 
         return $this->validateContent($input);
+    }
+
+    public function validateSkillMd(SkillMd $skillMd): ValidationResult
+    {
+        return $this->validateContent($skillMd->toMarkdown());
     }
 
     public function validateFile(string $skillFile): ValidationResult

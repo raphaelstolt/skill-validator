@@ -7,6 +7,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [v0.1.0] - 2026-05-16
+
+### Improved
+
+- Improved the integrating of the [stolt/skill-md](https://github.com/raphaelstolt/skill-md/) package.
+
 ## [v0.0.5] - 2026-05-13
 
 ### Added
@@ -35,8 +41,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Initial release.
 
-[Unreleased]: https://github.com/raphaelstolt/skill-validator/compare/v0.0.5...HEAD
+[Unreleased]: https://github.com/raphaelstolt/skill-validator/compare/v0.1.0...HEAD
 
+[v0.1.0]: https://github.com/raphaelstolt/skill-validator/compare/v0.0.5...v0.1.0
 [v0.0.5]: https://github.com/raphaelstolt/skill-validator/compare/v0.0.4...v0.0.5
 [v0.0.4]: https://github.com/raphaelstolt/skill-validator/compare/v0.0.3...v0.0.4
 [v0.0.3]: https://github.com/raphaelstolt/skill-validator/compare/v0.0.2...v0.0.3

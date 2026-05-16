@@ -18,6 +18,7 @@ final readonly class ValidationResult
         private ?Metadata $metadata,
         private array     $rawMetadata,
         private string    $body,
+        private ?SkillMd  $skillMd = null,
     ) {
     }
 
@@ -28,7 +29,13 @@ final readonly class ValidationResult
             [],
             $metadata,
             $metadata->toArray(),
-            $body
+            $body,
+            SkillMd::create(
+                $metadata->name(),
+                $metadata->description(),
+                $body,
+                $metadata->additionalFields()
+            )
         );
     }
 
@@ -105,14 +112,20 @@ final readonly class ValidationResult
         return $this->body;
     }
 
+    public function skillMd(): ?SkillMd
+    {
+        return $this->skillMd;
+    }
+
     public function toSkillMd(): SkillMd
     {
-        return SkillMd::create(
-            $this->metadata?->get('name'),
-            $this->metadata?->get('description'),
-            $this->body(),
-            $this->metadata?->toArray() ?? []
-        );
+        if ($this->skillMd === null) {
+            throw new \LogicException(
+                'Cannot convert an invalid ValidationResult to a SkillMd instance.'
+            );
+        }
+
+        return $this->skillMd;
     }
 
     /**
