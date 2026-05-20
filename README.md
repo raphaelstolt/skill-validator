@@ -19,11 +19,10 @@ composer require stolt/skill-validator
 
 ## Usage
 
-The `SkillMd` class from the [stolt/skill-md](https://github.com/raphaelstolt/skill-md/) package is the primary
-abstraction for a validated skill: every valid result exposes a `SkillMd` instance, and the validator also accepts
-`SkillMd` instances directly as input.
+The `SkillMd` class from the [stolt/skill-md](https://github.com/raphaelstolt/skill-md/) package is the primary abstraction for a validated skill. Every valid
+result exposes a `SkillMd` instance, and the validator also accepts `SkillMd` instances directly as input.
 
-The validator can validate existing `SKILL.md` files, raw `SKILL.md` content, or `SkillMd` instances.
+The validator can validate existing `SKILL.md` files, raw `SKILL.md` content, or the mentioned `SkillMd` instances.
 
 ### Validating a `SKILL.md` file
 
@@ -146,7 +145,7 @@ $validator = new Validator();
 // Parse and validate raw content.
 $result = $validator->validateContent($rawContent);
 
-// Obtain the primary SkillMd abstraction.
+// Get the primary SkillMd abstraction.
 $skillMd = $result->toSkillMd();
 
 // Re-validate the SkillMd — e.g. after modifying it.
