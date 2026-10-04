@@ -7,6 +7,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [v0.1.1] - 2026-10-04
+
+### Fixed
+- Peeled release.
+
 ## [v0.1.0] - 2026-05-16
 
 ### Improved
@@ -41,8 +46,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Initial release.
 
-[Unreleased]: https://github.com/raphaelstolt/skill-validator/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/raphaelstolt/skill-validator/compare/v0.1.1...HEAD
 
+[v0.1.1]: https://github.com/raphaelstolt/skill-validator/compare/v0.1.0...v0.1.1
 [v0.1.0]: https://github.com/raphaelstolt/skill-validator/compare/v0.0.5...v0.1.0
 [v0.0.5]: https://github.com/raphaelstolt/skill-validator/compare/v0.0.4...v0.0.5
 [v0.0.4]: https://github.com/raphaelstolt/skill-validator/compare/v0.0.3...v0.0.4
